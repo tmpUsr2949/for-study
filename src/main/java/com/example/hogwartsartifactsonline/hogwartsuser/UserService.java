@@ -2,23 +2,29 @@ package com.example.hogwartsartifactsonline.hogwartsuser;
 
 import com.example.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @Transactional
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public List<HogwartsUser> findAll() {
         return this.userRepository.findAll();
+    }
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public HogwartsUser findById(Integer userId) {
@@ -28,6 +34,7 @@ public class UserService {
 
     public HogwartsUser save(HogwartsUser newHogwartsUser) {
         // We NEED to encode plain password before saving to the DB! TODO
+        newHogwartsUser.setPassword(passwordEncoder.encode(newHogwartsUser.getPassword()));
         return this.userRepository.save(newHogwartsUser);
     }
 
@@ -53,4 +60,10 @@ public class UserService {
         this.userRepository.deleteById(userId);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return userRepository.findByUsername(username) // First, we need to find this user from database.
+                .map(MyUserPrincipal::new) // If found, wrap the returned user instance in a MyUserPrincipal instance.
+                .orElseThrow(() -> new UsernameNotFoundException("username " + username + " is not found.")); // Otherwise, throw an exception.
+    }
 }
