@@ -21,11 +21,20 @@ jobs:
       - name: Setup Gradle # 종속성 캐싱
         uses: gradle/actions/setup-gradle@v3
 
+      - name: permission to access
+        run: chmod +x ./gradlew
       - name: Build and test with Gradle
-        run: chmod +x ./gradlew build
+        run: ./gradlew build
 
 # 빌드 환경이 메이븐인 경우 아래 링크를 참조
 # https://docs.github.com/ko/enterprise-server@3.10/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 
 # 빌드 환경이 그레이들인 경우 아래 링크를 참조
 # https://docs.github.com/ko/enterprise-server@3.10/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
