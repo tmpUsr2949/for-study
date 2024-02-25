@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public Result findUserById(@PathVariable Integer userId) {
+    public Result findUserById(@PathVariable("userId") Integer userId) {
         HogwartsUser foundHogwartsUser = this.userService.findById(userId);
         UserDto userDto = this.userToUserDtoConverter.convert(foundHogwartsUser);
         return new Result(true, StatusCode.SUCCESS, "Find One Success", userDto);
@@ -63,7 +63,10 @@ public class UserController {
 
     // We are not using this to update password, need another changePassword method in this class.
     @PutMapping("/{userId}")
-    public Result updateUser(@PathVariable Integer userId, @Valid @RequestBody UserDto userDto) {
+    public Result updateUser(
+            @PathVariable("userId") Integer userId,
+            @Valid @RequestBody UserDto userDto
+    ) {
         HogwartsUser update = this.userDtoToUserConverter.convert(userDto);
         HogwartsUser updatedHogwartsUser = this.userService.update(userId, update);
         UserDto updatedUserDto = this.userToUserDtoConverter.convert(updatedHogwartsUser);
@@ -71,7 +74,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public Result deleteUser(@PathVariable Integer userId) {
+    public Result deleteUser(@PathVariable("userId") Integer userId) {
         this.userService.delete(userId);
         return new Result(true, StatusCode.SUCCESS, "Delete Success");
     }
