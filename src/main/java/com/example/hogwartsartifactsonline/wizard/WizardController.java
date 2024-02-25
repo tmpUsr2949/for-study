@@ -40,7 +40,7 @@ public class WizardController {
     }
 
     @GetMapping("/{wizardId}")
-    public Result findWizardById(@PathVariable Integer wizardId) {
+    public Result findWizardById(@PathVariable("wizardId") Integer wizardId) {
         Wizard foundWizard = this.wizardService.findById(wizardId);
         WizardDto wizardDto = this.wizardToWizardDtoConverter.convert(foundWizard);
         return new Result(true, StatusCode.SUCCESS, "Find One Success", wizardDto);
@@ -55,7 +55,10 @@ public class WizardController {
     }
 
     @PutMapping("/{wizardId}")
-    public Result updateWizard(@PathVariable Integer wizardId, @Valid @RequestBody WizardDto wizardDto) {
+    public Result updateWizard(
+            @PathVariable("wizardId") Integer wizardId,
+            @Valid @RequestBody WizardDto wizardDto
+    ) {
         Wizard update = this.wizardDtoToWizardConverter.convert(wizardDto);
         Wizard updatedWizard = this.wizardService.update(wizardId, update);
         WizardDto updatedWizardDto = this.wizardToWizardDtoConverter.convert(updatedWizard);
@@ -63,15 +66,15 @@ public class WizardController {
     }
 
     @DeleteMapping("/{wizardId}")
-    public Result deleteWizard(@PathVariable Integer wizardId) {
+    public Result deleteWizard(@PathVariable("wizardId") Integer wizardId) {
         this.wizardService.delete(wizardId);
         return new Result(true, StatusCode.SUCCESS, "Delete Success");
     }
 
     @PutMapping("/{wizardId}/artifacts/{artifactId}")
     public Result assignArtifact(
-            @PathVariable Integer wizardId,
-            @PathVariable String artifactId
+            @PathVariable("wizardId") Integer wizardId,
+            @PathVariable("artifactId") String artifactId
     ) {
         wizardService.assignArtifact(wizardId, artifactId);
         return new Result(true, StatusCode.SUCCESS, "Artifact Assignment Success");

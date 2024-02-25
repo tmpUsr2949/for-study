@@ -45,7 +45,7 @@ public class ArtifactController {
     }
 
     @GetMapping("/{artifactId}")
-    public Result findArtifactById(@PathVariable String artifactId) {
+    public Result findArtifactById(@PathVariable("artifactId") String artifactId) {
         Artifact foundArtifact = artifactService.findById(artifactId);
         ArtifactDto artifactDto = artifactToArtifactDtoConverter.convert(foundArtifact);
 
@@ -54,7 +54,7 @@ public class ArtifactController {
 
     @PutMapping("/{artifactId}")
     public Result updateArtifact(
-            @PathVariable String artifactId,
+            @PathVariable("artifactId") String artifactId,
             @Valid @RequestBody ArtifactDto artifactDto
     ) {
         Artifact update = artifactDtoToArtifactConverter.convert(artifactDto);
@@ -65,7 +65,7 @@ public class ArtifactController {
     }
 
     @DeleteMapping("/{artifactId}")
-    public Result deleteArtifact(@PathVariable String artifactId) {
+    public Result deleteArtifact(@PathVariable("artifactId") String artifactId) {
         artifactService.delete(artifactId);
         return new Result(true, StatusCode.SUCCESS, "Delete Success");
     }
